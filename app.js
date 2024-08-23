@@ -2,10 +2,11 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const Campground = require('./models/campground'); 
-const methodOveride = require('method-override');
+const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
-const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
+const review =require("./models/review");
+const catchAsync = require('./utils/catchAsync');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
 
@@ -22,7 +23,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
-app.use(methodOveride('_method'));
+app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -51,7 +52,7 @@ app.post('/campgrounds' , async (req,res,next)=>{
 
 
 app.get('/campgrounds/:id',catchAsync( async(req,res,) => {
-    const campground=await Campground.findById(req.params.id)
+    const campground=await Campground.findById(req.params.id).populate('reviews');
     console.log('campgrounds',campground)
     res.render('campgrounds/show', {campground});
 }))
@@ -88,7 +89,29 @@ app.use((req, res, next) => {
     next(err);
 });
 
- 
+app.post('/campgrounds/:id/reviews', catchAsync(async (req, res) => {
+    console.log('Received review submission:', req.body.review);
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save(); 
+    await campground.save();
+    console.log('Review saved successfully');
+    res.redirect(`/campgrounds/${campground._id}`);
+}));
+
+app.delete('/campgrounds/:id/reviews:reviewId', catchAsync(async(req,res)=>{
+    const {id, reviewId}=req.params;
+    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`)
+}))
+
+
+app.all("*", (req, res, next) => {
+  next(new ExpressError(404, "Page not found"));
+}); 
+
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
     if (!err.message) err.message = 'Something went wrong!';
