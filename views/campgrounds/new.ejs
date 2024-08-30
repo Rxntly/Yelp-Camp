@@ -1,7 +1,7 @@
 <% layout('/layout/boilerplate') %>
 <div class="row">
-   <form action="/campgrounds" method="POST" novalidate class="validated-form">
-      <h1 class="text-center">New Campground</h1>
+   <form action="/campgrounds" method="POST" novalidate class="validated-form'>
+      <h1 class=" text-center">New Campground</h1>
       <div class="col-6 offset-3">
          <div class="mb-3">
             <label for="title">Whats the title?</label>
@@ -10,36 +10,29 @@
          <div class="valid-feedback">
             nice title
          </div>
-
          <div class="mb-3">
             <label for="location">Whats the Location?</label>
             <input class="form-control" type="text" id="location" name="campground[location]" required>
          </div>
-
          <div class="mb-3">
             <label for="image">What is the Image URL?</label> <br>
             <input class="form-control" type="text" id="image" name="campground[image]">
          </div>
-
          <div class="input-group mb-3">
             <label for="price" class="form-label">What is the Campgrounds Price?</label>
             <div class="input-group">
                <span class="input-group-text" id="price-label">$</span>
                <input type="text" class="form-control" placeholder="0.00" aria-label="Amount (to the nearest dollar)"
-                  aria-describedby="price-label">
+                  aria-describedby="price-label" name="campground[price]"> <!-- Add name attribute here -->
                <span class="input-group-text">.00</span>
             </div>
          </div>
-
          <div class="mb-3">
             <label for="description">description</label>
             <textarea class="form-control" type="text" id="description" name="campground[description]"></textarea>
          </div>
-
-
          <button type="submit" class="btn btn-primary">Submit</button>
    </form>
-
    <h4 class="mt-3"><a href="/campgrounds"> return to camp grounds list</a></h4>
 </div>
 </div>

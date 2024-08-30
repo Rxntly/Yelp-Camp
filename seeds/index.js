@@ -18,15 +18,17 @@ db.once("open", () => {
 
 const sample = array => array[Math.floor(Math.random() * array.length)];
 
+
 const seedDB = async () => {
     await Campground.deleteMany({});
     for (let x = 0; x < 50; x++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 30) + 10;
         const camp = new Campground({
+            author: '66ced6de5abc3a3850adc320', 
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
-            image: "https://picsum.photos/200/300",
+             image: "https://picsum.photos/200/300",
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, autem. Corrupti non assumenda culpa minima inventore, nisi facilis consectetur at, est corporis id ab rerum asperiores! Veniam natus quae aliquam?',
             price
         });
